@@ -113,7 +113,7 @@ USE_I18N = True
 
 USE_TZ = True
 
-CSRF_TRUSTED_ORIGIN = ["https://react-theb.onrender.com/"]
+CSRF_TRUSTED_ORIGINS = ["https://react-theb.onrender.com/"]
 # Static files (CSS, JavaScript, Images)
 # https://docs.djangoproject.com/en/5.1/howto/static-files/
 
