@@ -25,9 +25,9 @@ const PredictionForm = () => {
   const handleSubmit = async (e) => {
     e.preventDefault();
     try {
-      const response = await axios.post('https://react-theb.onrender.com/', {
+      const response = await axios.post('https://react-theb.onrender.com', {
         bedrooms: parseFloat(formData.bedrooms),
-        bathrooms: parseFloat(formData.bathrooms),
+        bathrooms: parseFloat(formData.bathrooms),  
         sqft_living: parseFloat(formData.sqft_living),
         sqft_lot: parseFloat(formData.sqft_lot),
         floors: parseFloat(formData.floors),
@@ -66,6 +66,7 @@ const PredictionForm = () => {
       {prediction && (
         <div>
           <h2>Prediction Result:</h2>
+          <p>{prediction.prediction}</p>
           <pre>{JSON.stringify(prediction, null, 2)}</pre>
         </div>
       )}
