@@ -4,7 +4,9 @@ import json
 import pickle
 import numpy as np
 import os
-from django.middleware.csrf import get_token
+from rest_framework.decorators import api_view
+from rest_framework.response import Response
+from rest_framework import status   
 from django.views.decorators.csrf import csrf_exempt
 
 # @ensure_csrf_cookie
@@ -21,7 +23,7 @@ with open(modelPath, "rb") as f:
 with open(scalerPath, "rb") as f:
     scaler = pickle.load(f)
 
-@csrf_exempt
+@api_view(["POST"])
 def predict_price(request):
     if request.method == "POST":
         try:
@@ -29,7 +31,7 @@ def predict_price(request):
             required_fields = ["bedrooms", "bathrooms", "sqft_living", "sqft_lot", "floors", "waterfront", "condition"]
             for field in required_fields:
                 if field not in data:
-                    return JsonResponse({"error": f"Missing field '{field}'"}, status=400)
+                    return Response({"error": f"Missing field '{field}'"}, status=400)
                 
             features = [
                 data.get("bedrooms"),
@@ -41,9 +43,9 @@ def predict_price(request):
                 data.get("condition")
             ]
             prediction = model.predict([features])[0]
-            return JsonResponse({"predicted_price": float(prediction)})
-        except json.JSONDecodeError:
-            return JsonResponse({"error": "Invalid JSON format."}, status=400)
+            return Response({"prediction": prediction}, status=status.HTTP_200_OK)
         except Exception as e:
-            return JsonResponse({"error": str(e)}, status=400)
-    return JsonResponse({"error": "Invalid request method. Use POST."}, status=400)
+            # Log error details for debugging purposes
+            print("Error during prediction:", e)
+            return Response({"error": "Invalid input or server error."}, status=status.HTTP_400_BAD_REQUEST)
+    return Response({"error": "Invalid request method. Use POST."}, status=status.HTTP_400_BAD_REQUEST)
